@@ -1,5 +1,6 @@
-package br.com.gustavonori.catan.model.constructions;
+package br.com.gustavonori.catan.model.constructions.builders;
 
+import br.com.gustavonori.catan.model.constructions.ConstructionsBuilder;
 import br.com.gustavonori.catan.model.elements.Element;
 import br.com.gustavonori.catan.model.elements.Elements;
 import br.com.gustavonori.catan.model.player.Player;

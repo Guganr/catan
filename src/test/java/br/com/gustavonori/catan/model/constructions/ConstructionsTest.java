@@ -1,15 +1,12 @@
 package br.com.gustavonori.catan.model.constructions;
 
+import br.com.gustavonori.catan.model.constructions.builders.RoadBuilder;
 import br.com.gustavonori.catan.model.elements.Element;
 import br.com.gustavonori.catan.model.elements.Elements;
 import br.com.gustavonori.catan.model.player.Player;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ConstructionsTest {
 

@@ -1,4 +1,4 @@
-package br.com.gustavonori.catan.model.constructions;
+package br.com.gustavonori.catan.model.constructions.builders;
 
 import br.com.gustavonori.catan.model.elements.Elements;
 
@@ -9,7 +9,7 @@ import static br.com.gustavonori.catan.model.elements.Elements.WOOD;
 
 public class RoadBuilder extends Constructions {
 
-    private static final String ROAD = "ROAD";
+    private static final String NAME = "ROAD";
     private static final int POINTS = 0;
     public static Map<Elements, Integer> elementsToBuild = (Map.of(
             BRICK,1,
@@ -17,7 +17,7 @@ public class RoadBuilder extends Constructions {
     ));
 
     public RoadBuilder() {
-        super(ROAD, POINTS, elementsToBuild);
+        super(NAME, POINTS, elementsToBuild);
     }
 
 }

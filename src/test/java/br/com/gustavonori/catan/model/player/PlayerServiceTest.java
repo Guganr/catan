@@ -1,13 +1,12 @@
 package br.com.gustavonori.catan.model.player;
 
-import br.com.gustavonori.catan.model.constructions.RoadBuilder;
-import br.com.gustavonori.catan.model.elements.Element;
+import br.com.gustavonori.catan.model.constructions.builders.RoadBuilder;
+import br.com.gustavonori.catan.model.constructions.builders.VillageBuilder;
 import br.com.gustavonori.catan.model.elements.Elements;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static br.com.gustavonori.catan.model.elements.Elements.*;
@@ -114,6 +113,79 @@ public class PlayerServiceTest {
                 allOf(
                         hasProperty("name", is("ROAD")),
                         hasProperty("points", is(0))
+                )
+        ));
+    }
+
+    @Test
+    public void buildVillage() {
+        Map<Elements, Integer> elements = new HashMap<>();
+        elements.put(BRICK, 2);
+        elements.put(WHEAT, 2);
+        elements.put(SHEEP, 2);
+        elements.put(WOOD, 1);
+        addElements(elements);
+        playerService.buildingConstructions(new VillageBuilder());
+        assertThat(player.getElements(), hasItems(
+                allOf(
+                        hasProperty("name", is(WOOD)),
+                        hasProperty("quantity", is(0))
+                ),
+                allOf(
+                        hasProperty("name", is(BRICK)),
+                        hasProperty("quantity", is(1))
+                ),
+                allOf(
+                        hasProperty("name", is(WHEAT)),
+                        hasProperty("quantity", is(1))
+                ),
+                allOf(
+                        hasProperty("name", is(SHEEP)),
+                        hasProperty("quantity", is(1))
+                )
+        ));
+
+        assertThat(player.getConstructions(), hasItem(
+                allOf(
+                        hasProperty("name", is("VILLAGE")),
+                        hasProperty("points", is(1))
+                )
+        ));
+    }
+
+
+    @Test
+    public void buildCity() {
+        Map<Elements, Integer> elements = new HashMap<>();
+        elements.put(BRICK, 2);
+        elements.put(WHEAT, 2);
+        elements.put(SHEEP, 2);
+        elements.put(WOOD, 1);
+        addElements(elements);
+        playerService.buildingConstructions(new VillageBuilder());
+        assertThat(player.getElements(), hasItems(
+                allOf(
+                        hasProperty("name", is(WOOD)),
+                        hasProperty("quantity", is(0))
+                ),
+                allOf(
+                        hasProperty("name", is(BRICK)),
+                        hasProperty("quantity", is(1))
+                ),
+                allOf(
+                        hasProperty("name", is(WHEAT)),
+                        hasProperty("quantity", is(1))
+                ),
+                allOf(
+                        hasProperty("name", is(SHEEP)),
+                        hasProperty("quantity", is(1))
+                )
+        ));
+
+        assertThat(player.getConstructions(), hasItem(
+                allOf(
+                        hasProperty("name", is("VILLAGE")),
+                        hasProperty("points", is(1))
                 )
         ));
     }
