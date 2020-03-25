@@ -1,6 +1,7 @@
 package br.com.gustavonori.catan.model.player;
 
 import br.com.gustavonori.catan.model.constructions.builders.Constructions;
+import br.com.gustavonori.catan.model.constructions.develpment.DevelopmentCard;
 import br.com.gustavonori.catan.model.elements.Element;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class Player {
     private String name;
     private List<Element> elements;
     private List<Constructions> constructions;
+    private List<DevelopmentCard> developmentCards;
 
     public Player(int id, String name) {
         this.id = id;
@@ -56,5 +58,13 @@ public class Player {
 
     public void setConstructions(List<Constructions> constructions) {
         this.constructions = constructions;
+    }
+
+    public List<DevelopmentCard> getDevelopmentCards() {
+        return developmentCards;
+    }
+
+    public void setDevelopmentCards(List<DevelopmentCard> developmentCards) {
+        this.developmentCards = developmentCards;
     }
 }

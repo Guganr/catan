@@ -58,4 +58,10 @@ public class Constructions implements ConstructionsBuilder {
             player.getConstructions().add(this);
         }
     }
+
+    @Override
+    public void specificAction(PlayerService playerService) {
+        //Nothing to do here
+    }
+
 }

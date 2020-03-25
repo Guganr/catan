@@ -5,5 +5,7 @@ import br.com.gustavonori.catan.model.player.PlayerService;
 
 public interface ConstructionsBuilder {
 
-    void build(PlayerService player);
+    void build(PlayerService playerService);
+
+    void specificAction(PlayerService playerService);
 }
