@@ -49,7 +49,7 @@ public class Constructions implements ConstructionsBuilder {
     @Override
     public void build(PlayerService playerService) {
         Player player = playerService.getPlayer();
-        if (checkElements(player.getElements())) {
+        if (checkElements(player.getElements())){
             try {
                 playerService.removingElements(this.elementsToBuild);
             } catch (RemovingElementException removingElementException) {

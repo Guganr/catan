@@ -26,6 +26,7 @@ public class Player {
                 new Element(WHEAT),
                 new Element(WOOD)));
         this.constructions = new ArrayList<>();
+        this.developmentCards = new ArrayList<>();
     }
 
     public int getId() {

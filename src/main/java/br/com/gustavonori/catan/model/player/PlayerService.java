@@ -7,6 +7,7 @@ import br.com.gustavonori.catan.model.elements.Elements;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerService {
     private Player player;
@@ -30,6 +31,21 @@ public class PlayerService {
     public void receivingElements(Element element, int quantity) {
         ElementService elementService = new ElementService(element);
         elementService.addElement(quantity);
+    }
+
+    private boolean checkElements(List<Element> elements, Constructions construction) {
+        Map<Elements, Integer> elementsToBuild = construction.getElementsToBuild();
+        AtomicBoolean check = new AtomicBoolean(true);
+        for (Element element : elements) {
+            elementsToBuild.forEach((el, qty) -> {
+                if (element.getName().equals(el)) {
+                    if (element.getQuantity() < qty){
+                        check.set(false);
+                    }
+                }
+            });
+        }
+        return check.get();
     }
 
     public void removingElements(Map<Elements, Integer> elements) throws RemovingElementException {
