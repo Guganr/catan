@@ -1,18 +1,12 @@
 package br.com.gustavonori.catan.model.constructions;
 
-import br.com.gustavonori.catan.model.constructions.builders.Constructions;
-import br.com.gustavonori.catan.model.constructions.builders.RoadBuilder;
-import br.com.gustavonori.catan.model.elements.Element;
-import br.com.gustavonori.catan.model.elements.Elements;
-import br.com.gustavonori.catan.model.player.Player;
-import br.com.gustavonori.catan.model.player.PlayerService;
-import org.junit.Before;
+import br.com.gustavonori.catan.model.builders.Constructions;
+import br.com.gustavonori.catan.model.models.elements.Elements;
+import br.com.gustavonori.catan.model.services.PlayerService;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Map;
 
-import static br.com.gustavonori.catan.model.elements.Elements.WOOD;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
