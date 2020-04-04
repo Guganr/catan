@@ -1,7 +1,5 @@
 package br.com.gustavonori.catan.model.models.elements;
 
-import br.com.gustavonori.catan.model.models.elements.Elements;
-
 public class Element {
     protected Elements name;
     protected int quantity;

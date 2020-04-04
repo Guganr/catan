@@ -28,7 +28,7 @@ public class VillageBuilderTest extends ConstructionsTest {
                 new Element(WHEAT,1),
                 new Element(BRICK,1)
         );
-        playerService.getPlayer().setElements(elementsPlayer);
+        playerService.getPlayer().getElements().addAll(elementsPlayer);
         construction = new VillageBuilder();
         elementToRemove = WOOD;
     }

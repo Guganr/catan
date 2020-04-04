@@ -1,19 +1,22 @@
 package br.com.gustavonori.catan.model.models.developmentcards;
 
-import br.com.gustavonori.catan.model.interfaces.develpment.DevelopmentCards;
-import br.com.gustavonori.catan.model.models.player.Player;
+import br.com.gustavonori.catan.model.interfaces.DevelopmentCards;
 import br.com.gustavonori.catan.model.models.developmentcards.pointcards.*;
 import br.com.gustavonori.catan.model.models.developmentcards.progresscards.InventionCard;
 import br.com.gustavonori.catan.model.models.developmentcards.progresscards.MonopolyCard;
 import br.com.gustavonori.catan.model.models.developmentcards.progresscards.RoadBuilderCard;
 import br.com.gustavonori.catan.model.models.elements.Elements;
-import br.com.gustavonori.catan.model.services.PlayerService;
+import br.com.gustavonori.catan.model.models.player.Player;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
+import br.com.gustavonori.catan.model.services.PlayerService;
+import net.bytebuddy.implementation.bind.annotation.This;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 
@@ -86,6 +89,10 @@ public class DevelopmentCard implements DevelopmentCards {
         return elementsToBuild;
     }
 
+    public static Map<Integer, DevelopmentCard> getDevelopmentCardsMap() {
+        return developmentCardsMap;
+    }
+
     public DevelopmentCard get(int id) {
         if (developmentCardsMap.get(id).isPicked())
             return null;
@@ -103,6 +110,26 @@ public class DevelopmentCard implements DevelopmentCards {
          return idsList;
     }
 
+    protected boolean checkIfPlayerHasTheCard(Player player) {
+         AtomicBoolean check = new AtomicBoolean(false);
+         developmentCardsMap.forEach((id, card) -> {
+            if (get(id).equals(this) && !this.flipped)
+                check.set(true);
+         });
+         return check.get();
+    }
+
+    public DevelopmentCard getADevelopmentCardForUnitTest(boolean picked) {
+        for (Map.Entry<Integer, DevelopmentCard> entry : developmentCardsMap.entrySet()) {
+            Integer id = entry.getKey();
+            DevelopmentCard card = entry.getValue();
+            if (card.getName().equals(this.getName()) && card.isPicked() == picked) {
+               return card;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void build(PlayerService playerService) {
         Player player = playerService.getPlayer();
@@ -115,12 +142,9 @@ public class DevelopmentCard implements DevelopmentCards {
         this.setPicked();
     }
 
-    public void specificAction(PlayerService playerService) {
+    @Override
+    public void specificAction(PlayerService playerService, Map<Elements, Integer> elements) {
 
     }
 
-    public void doTheFlip(PlayerService playerService) {
-        setFlipped();
-        specificAction(playerService);
-    }
 }

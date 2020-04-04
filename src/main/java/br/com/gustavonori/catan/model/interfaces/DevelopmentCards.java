@@ -5,9 +5,9 @@ import br.com.gustavonori.catan.model.services.PlayerService;
 
 import java.util.Map;
 
-public interface ConstructionsBuilder {
+public interface DevelopmentCards {
 
     void build(PlayerService playerService);
 
-    void specificAction(PlayerService playerService);
+    void specificAction(PlayerService playerService, Map<Elements, Integer> elements);
 }

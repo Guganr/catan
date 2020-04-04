@@ -16,19 +16,17 @@ import static br.com.gustavonori.catan.model.models.elements.Elements.WOOD;
 public class DevelopmentCardServiceTest {
 
     DevelopmentCardService developmentCardService;
-    private Player player;
     private PlayerService playerService;
 
     @Before
     public void setUp(){
-        player = new Player(1, "Gustavo");
-        playerService = new PlayerService(player);
+        playerService = new PlayerService(new Player(1, "Gustavo"));
         developmentCardService = new DevelopmentCardService();
     }
 
     public void addElements(Map<Elements, Integer> elements) {
         elements.forEach((name, quantity) -> {
-            playerService.receivingElements(player.getElements().get(playerService.getElementIndex(name)), quantity);
+            playerService.receivingElements(name, quantity);
         });
     }
 

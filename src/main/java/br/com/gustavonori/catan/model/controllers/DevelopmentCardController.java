@@ -21,12 +21,7 @@ public class DevelopmentCardController {
 
     @Autowired
     DevelopmentCardService developmentCardService;
-//
-//    @RequestMapping("/cartas")
-//    public List<DevelopmentCard> lista(){
-//        return developmentCardService.listAll();
-//    }
-//
+
     @RequestMapping("/construir")
     public List<DevelopmentCard> listar(){
 
@@ -36,9 +31,7 @@ public class DevelopmentCardController {
         elements.put(ROCK, 5);
         elements.put(WHEAT, 5);
         PlayerService playerService = new PlayerService(player);
-        elements.forEach((name, quantity) -> {
-            playerService.receivingElements(player.getElements().get(playerService.getElementIndex(name)), quantity);
-        });
+        elements.forEach(playerService::receivingElements);
 
         if (developmentCardService.newDevelopmentCard(playerService))
             return playerService.getPlayer().getDevelopmentCards();

@@ -1,7 +1,10 @@
 package br.com.gustavonori.catan.model.models.developmentcards.progresscards;
 
 import br.com.gustavonori.catan.model.models.developmentcards.DevelopmentCard;
+import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.services.PlayerService;
+
+import java.util.Map;
 
 public class MonopolyCard extends DevelopmentCard {
 
@@ -14,7 +17,7 @@ public class MonopolyCard extends DevelopmentCard {
         this.flipped = false;
     }
     @Override
-    public void specificAction(PlayerService playerService) {
+    public void specificAction(PlayerService playerService, Map<Elements, Integer> elements) {
 
     }
 }

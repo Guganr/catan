@@ -193,7 +193,7 @@ public class PlayerServiceTest {
 
     public void addElements(Map<Elements, Integer> elements) {
         elements.forEach((name, quantity) -> {
-            playerService.receivingElements(player.getElements().get(playerService.getElementIndex(name)), quantity);
+            playerService.receivingElements(name, quantity);
         });
     }
 }

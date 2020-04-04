@@ -1,7 +1,11 @@
 package br.com.gustavonori.catan.model.models.developmentcards.progresscards;
 
+import br.com.gustavonori.catan.model.builders.RoadBuilder;
 import br.com.gustavonori.catan.model.models.developmentcards.DevelopmentCard;
+import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.services.PlayerService;
+
+import java.util.Map;
 
 public class InventionCard extends DevelopmentCard {
     public InventionCard() {
@@ -13,7 +17,11 @@ public class InventionCard extends DevelopmentCard {
     }
 
     @Override
-    public void specificAction(PlayerService playerService) {
-
+    public void specificAction(PlayerService playerService, Map<Elements, Integer> elements) {
+        if (checkIfPlayerHasTheCard(playerService.getPlayer())) {
+            elements.forEach(playerService::receivingElements);
+        } else {
+            System.out.println("O jogador não possui esta carta");
+        }
     }
 }

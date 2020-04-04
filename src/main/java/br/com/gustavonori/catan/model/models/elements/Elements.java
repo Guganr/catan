@@ -5,5 +5,6 @@ public enum Elements {
     ROCK,
     SHEEP,
     WHEAT,
-    WOOD;
+    WOOD,
+    THIEF;
 }

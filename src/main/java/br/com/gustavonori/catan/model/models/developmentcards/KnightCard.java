@@ -1,6 +1,9 @@
 package br.com.gustavonori.catan.model.models.developmentcards;
 
+import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.services.PlayerService;
+
+import java.util.Map;
 
 public class KnightCard extends DevelopmentCard {
 
@@ -14,7 +17,7 @@ public class KnightCard extends DevelopmentCard {
     }
 
     @Override
-    public void specificAction(PlayerService playerService) {
+    public void specificAction(PlayerService playerService, Map<Elements, Integer> elements) {
 
     }
 }

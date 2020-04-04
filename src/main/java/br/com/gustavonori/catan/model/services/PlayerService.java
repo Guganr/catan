@@ -29,8 +29,12 @@ public class PlayerService {
         return playerElements.indexOf(elementMethod);
     }
 
-    public void receivingElements(Element element, int quantity) {
-        ElementService elementService = new ElementService(element);
+    public Element prepareReceivingElements(Elements elements) {
+        return this.getPlayer().getElements().get(this.getElementIndex(elements));
+    }
+
+    public void receivingElements(Elements elements, int quantity) {
+        ElementService elementService = new ElementService(prepareReceivingElements(elements));
         elementService.addElement(quantity);
     }
 
