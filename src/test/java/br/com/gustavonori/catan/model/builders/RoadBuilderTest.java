@@ -26,7 +26,9 @@ public class RoadBuilderTest extends ConstructionsTest {
                 new Element(WOOD,1),
                 new Element(BRICK,1)
         );
-        playerService.getPlayer().getElements().addAll(elementsPlayer);
+        elementsPlayer.forEach((element) -> {
+            playerService.receivingElements(element.getName(), element.getQuantity());
+        });
         construction = new RoadBuilder();
         elementToRemove = WOOD;
     }

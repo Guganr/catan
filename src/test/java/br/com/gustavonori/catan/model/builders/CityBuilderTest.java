@@ -26,7 +26,9 @@ public class CityBuilderTest extends ConstructionsTest {
                 new Element(WHEAT,2),
                 new Element(ROCK,3)
         );
-        playerService.getPlayer().getElements().addAll(elementsPlayer);
+        elementsPlayer.forEach((element) -> {
+            playerService.receivingElements(element.getName(), element.getQuantity());
+        });
         construction = new CityBuilder();
         elementToRemove = WHEAT;
     }

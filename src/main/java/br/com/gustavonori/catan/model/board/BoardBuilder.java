@@ -11,10 +11,9 @@ import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 public class BoardBuilder {
     private Map<Integer, String> alphabet;
     private Map<Integer, String> initPositionsOnTheBoard;
-    private List<Element> elementsList;
 
     public void start(Board board) {
-        populateElements();
+        List<Element> elementsList = populateElements();
         populateAlphabet();
         initPositionsOnTheBoard();
         for (int initPosition = 0; initPosition < 18; initPosition++) {
@@ -31,8 +30,8 @@ public class BoardBuilder {
         }
     }
 
-    private void populateElements() {
-        elementsList = new ArrayList<>();
+    public List<Element> populateElements() {
+        List<Element> elementsList = new ArrayList<>();
         Map<Elements, Integer> elementsMap = new HashMap<>();
         elementsMap.put(WHEAT, 4);
         elementsMap.put(WOOD, 4);
@@ -46,9 +45,10 @@ public class BoardBuilder {
         });
 
         Collections.shuffle(elementsList);
+        return elementsList;
     }
 
-    private Map<Integer, String> calculatePositions(String init) {
+    public Map<Integer, String> calculatePositions(String init) {
         Map<Integer, String> board = new HashMap<>();
         int length = init.length() - 1;
         String letter = String.valueOf(init.charAt(length));
@@ -79,7 +79,7 @@ public class BoardBuilder {
         return alphabet.get(letraKey);
     }
 
-    private void populateAlphabet() {
+    public void populateAlphabet() {
         alphabet = new HashMap<>();
         alphabet.put(1, "A");
         alphabet.put(2, "B");

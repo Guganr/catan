@@ -2,21 +2,16 @@ package br.com.gustavonori.catan.model.models.developmentcards;
 
 import br.com.gustavonori.catan.model.interfaces.DevelopmentCards;
 import br.com.gustavonori.catan.model.models.developmentcards.pointcards.*;
-import br.com.gustavonori.catan.model.models.developmentcards.progresscards.InventionCard;
-import br.com.gustavonori.catan.model.models.developmentcards.progresscards.MonopolyCard;
-import br.com.gustavonori.catan.model.models.developmentcards.progresscards.RoadBuilderCard;
 import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.models.player.Player;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
 import br.com.gustavonori.catan.model.services.PlayerService;
-import net.bytebuddy.implementation.bind.annotation.This;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 
@@ -95,7 +90,7 @@ public class DevelopmentCard implements DevelopmentCards {
 
     public DevelopmentCard get(int id) {
         if (developmentCardsMap.get(id).isPicked())
-            return null;
+            return new DevelopmentCard();
         else
             return developmentCardsMap.get(id);
     }

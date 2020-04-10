@@ -1,14 +1,10 @@
 package br.com.gustavonori.catan.model.models.developmentcards.progresscards;
 
-import br.com.gustavonori.catan.model.builders.CityBuilder;
-import br.com.gustavonori.catan.model.constructions.ConstructionsTest;
 import br.com.gustavonori.catan.model.models.developmentcards.DevelopmentCard;
+import br.com.gustavonori.catan.model.models.developmentcards.RoadBuilderCard;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.Player;
 import br.com.gustavonori.catan.model.services.PlayerService;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +13,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
-import static br.com.gustavonori.catan.model.models.elements.Elements.SHEEP;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.allOf;
@@ -25,7 +20,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RoadBuilderCardTest {
+public class RoadBuilderCardTest{
 
     private PlayerService playerService;
     private DevelopmentCard roadBuilderCard;
@@ -37,7 +32,9 @@ public class RoadBuilderCardTest {
                 new Element(WHEAT,2),
                 new Element(ROCK,3)
         );
-        playerService.getPlayer().getElements().addAll(elementsPlayer);
+        elementsPlayer.forEach((element) -> {
+            playerService.receivingElements(element.getName(), element.getQuantity());
+        });
         RoadBuilderCard roadBuilderCardCall = new RoadBuilderCard();
         roadBuilderCard = roadBuilderCardCall.getADevelopmentCardForUnitTest(false);
         playerService.getPlayer().getDevelopmentCards().add(roadBuilderCard);

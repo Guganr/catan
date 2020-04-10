@@ -1,4 +1,4 @@
-package br.com.gustavonori.catan.model.models.developmentcards.progresscards;
+package br.com.gustavonori.catan.model.models.developmentcards;
 
 import br.com.gustavonori.catan.model.models.developmentcards.DevelopmentCard;
 import br.com.gustavonori.catan.model.models.elements.Elements;
