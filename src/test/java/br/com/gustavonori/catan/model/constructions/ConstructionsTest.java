@@ -1,36 +1,30 @@
 package br.com.gustavonori.catan.model.constructions;
 
-import br.com.gustavonori.catan.model.constructions.builders.RoadBuilder;
-import br.com.gustavonori.catan.model.elements.Element;
-import br.com.gustavonori.catan.model.elements.Elements;
-import br.com.gustavonori.catan.model.player.Player;
-import org.junit.Before;
+import br.com.gustavonori.catan.model.builders.Constructions;
+import br.com.gustavonori.catan.model.models.elements.Elements;
+import br.com.gustavonori.catan.model.services.PlayerService;
+import org.junit.Test;
 
-import java.util.List;
+import java.util.Map;
 
-class ConstructionsTest {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    private Player player;
-    private RoadBuilder roadBuilder;
+public abstract class ConstructionsTest {
 
-    @Before
-    public void setUp(){
-        player = new Player(1, "Gustavo");
-        List<Element> elementsPlayer = List.of(
-                new Element(Elements.WOOD,1),
-                new Element(Elements.BRICK,1)
-        );
-        player.setElements(elementsPlayer);
-        roadBuilder = new RoadBuilder();
+    protected PlayerService playerService;
+    protected Constructions construction;
+    protected Elements elementToRemove;
+
+    @Test
+    public void testCheckElementsSuccess() {
+        assertTrue(construction.checkElements(playerService.getPlayer().getElements()));
     }
-//
-//    @Test
-//    public void buildSuccess() {
-//        assertTrue(roadBuilder.build(player));
-//    }
-//
-//    @Test
-//    public void buildFailed() {
-//        assertTrue(roadBuilder.build(player));
-//    }
+
+    @Test
+    public void testCheckElementsFail() {
+        playerService.removingElements(Map.of(elementToRemove, 1));
+        assertFalse(construction.checkElements(playerService.getPlayer().getElements()));
+    }
+
 }
