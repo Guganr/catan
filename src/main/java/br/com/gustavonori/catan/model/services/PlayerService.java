@@ -5,9 +5,11 @@ import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
 import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.models.player.Player;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerService {
@@ -66,5 +68,10 @@ public class PlayerService {
 
     public void buildingConstructions(Constructions construction){
         construction.build(this);
+    }
+
+    private int rollTheDice() {
+        Random r = new Random();
+        return r.nextInt((12 - 1) + 1) + 1;
     }
 }

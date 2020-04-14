@@ -20,7 +20,7 @@ public class BoardBuilderTest {
 
     @Before
     public void setUp() {
-        boardBuilder = new BoardBuilder();
+        boardBuilder = new BoardBuilder(new Board());
     }
 
     @Test
