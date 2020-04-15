@@ -2,6 +2,8 @@ package br.com.gustavonori.catan.model.services;
 
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
+import org.springframework.stereotype.Service;
+
 
 public class ElementService {
     private Element element;

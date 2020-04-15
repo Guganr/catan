@@ -1,5 +1,7 @@
 package br.com.gustavonori.catan.model.builders;
 
+import br.com.gustavonori.catan.model.board.Board;
+import br.com.gustavonori.catan.model.board.BoardBuilder;
 import br.com.gustavonori.catan.model.constructions.ConstructionsTest;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.Player;
@@ -8,6 +10,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +18,7 @@ import static br.com.gustavonori.catan.model.models.elements.Elements.ROCK;
 import static br.com.gustavonori.catan.model.models.elements.Elements.WHEAT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CityBuilderTest extends ConstructionsTest {
@@ -31,6 +35,9 @@ public class CityBuilderTest extends ConstructionsTest {
         });
         construction = new CityBuilder();
         elementToRemove = WHEAT;
+        boardBuilder = new BoardBuilder(new Board());
+        boardBuilder.start();
+        boardBuilder.distributingNumbers();
     }
 
     @Test
@@ -64,5 +71,23 @@ public class CityBuilderTest extends ConstructionsTest {
         MatcherAssert.assertThat(playerService.getPlayer().getConstructions(), hasItems(
                 allOf(
                         hasProperty("name", is("CITY")))));
+    }
+
+    @Test
+    public void testCheckPositionSuccess(){
+        String position = "9G";
+        List<PlayerService> players = new ArrayList<>();
+        playerService.getPlayer().setConstructions(List.of(new VillageBuilder()));
+        playerService.getPlayer().getConstructions().get(0).setPosition(position);
+        players.add(playerService);
+        assertTrue(construction.checkPosition(boardBuilder, players, position));
+    }
+
+    @Test
+    public void testCheckPositionFail(){
+        String position = "13E";
+        List<PlayerService> players = new ArrayList<>();
+        players.add(playerService);
+        assertTrue(construction.checkPosition(boardBuilder, players, position));
     }
 }

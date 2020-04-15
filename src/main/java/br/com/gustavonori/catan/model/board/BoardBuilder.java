@@ -11,15 +11,34 @@ import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 public class BoardBuilder {
     private Map<Integer, String> alphabet;
     private Map<Integer, String> initPositionsOnTheBoard;
+    private Board board;
 
-    public void start(Board board) {
+    public BoardBuilder(Board board) {
+        this.board = new Board();
+    }
+    public Board getBoard(){
+        return this.board;
+    }
+
+    public List<String> getMapping(){
+        List<String> map = new ArrayList<>();
+        board.getPositions().forEach((position) -> {
+            position.getMapping().forEach((key, value) -> {
+                map.add(value);
+            });
+        });
+        return map;
+    }
+
+    public void start() {
         List<Element> elementsList = populateElements();
         populateAlphabet();
         initPositionsOnTheBoard();
-        for (int initPosition = 0; initPosition < 18; initPosition++) {
+        for (int initPosition = 0; initPosition < 19; initPosition++) {
             Element element = elementsList.get(initPosition);
             int number = 0;
             if (initPosition == 12) {
+                elementsList.add(element);
                 element = new Thief(THIEF);
                 number = 7;
             }
@@ -27,6 +46,19 @@ public class BoardBuilder {
                     new BoardPosition(initPosition, element,
                             calculatePositions(initPositionsOnTheBoard.get(initPosition)), number)
             );
+        }
+    }
+
+    public void distributingNumbers() {
+        List<Integer> numbers = new ArrayList<>(List.of(2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12));
+        Collections.shuffle(numbers);
+        int i = 0;
+        for (BoardPosition boardPosition : board.getPositions()) {
+            if (!boardPosition.getElement().getName().equals(THIEF))
+                boardPosition.setNumber(numbers.get(i));
+            else
+                numbers.add(numbers.get(i));
+            i++;
         }
     }
 

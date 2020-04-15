@@ -13,9 +13,9 @@ public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
 
-        Board board = new Board();
-        BoardBuilder bb = new BoardBuilder();
-        bb.start(board);
-        System.out.println(board);
+        BoardBuilder boardBuilder = new BoardBuilder(new Board());
+        boardBuilder.start();
+        boardBuilder.distributingNumbers();
+        System.out.println(boardBuilder);
     }
 }
