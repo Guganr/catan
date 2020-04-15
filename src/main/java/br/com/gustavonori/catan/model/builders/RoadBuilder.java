@@ -31,6 +31,7 @@ public class RoadBuilder extends Constructions {
         if (isRoadPosition(position)) {
            return super.checkPosition(board, playerServiceList, position);
         } else {
+            //ADDERRORMSG
             return false;
         }
     }

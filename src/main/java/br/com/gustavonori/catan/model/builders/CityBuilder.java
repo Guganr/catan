@@ -31,6 +31,7 @@ public class CityBuilder extends Constructions {
             if (constructions instanceof VillageBuilder && constructions.getPosition().equals(position))
                 check.set(true);
         });
+        //ADDERRORMSG
         return check.get();
     }
 }

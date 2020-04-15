@@ -55,6 +55,7 @@ public class Constructions implements ConstructionsBuilder {
             this.elementsToBuild.forEach((el, qty) -> {
                if (element.getName().equals(el)) {
                    if (element.getQuantity() < qty){
+                       //ADDERRORMSG
                        check.set(false);
                    }
                }
@@ -71,9 +72,11 @@ public class Constructions implements ConstructionsBuilder {
                 playerService.getPlayer().getConstructions().forEach((constructions) -> {
                     if (constructions.getPosition().equals(position))
                         check.set(false);
+                        //ADDERRORMSG
                 });
             });
         } else {
+            //ADDERRORMSG
             return false;
         }
         return check.get();
@@ -86,6 +89,7 @@ public class Constructions implements ConstructionsBuilder {
             try {
                 playerService.removingElements(this.elementsToBuild);
             } catch (RemovingElementException removingElementException) {
+                //ADDERRORMSG
                 removingElementException.printStackTrace();
             }
             player.getConstructions().add(this);

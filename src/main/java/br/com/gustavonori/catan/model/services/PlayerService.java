@@ -1,5 +1,6 @@
 package br.com.gustavonori.catan.model.services;
 
+import br.com.gustavonori.catan.model.board.BoardBuilder;
 import br.com.gustavonori.catan.model.builders.Constructions;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
