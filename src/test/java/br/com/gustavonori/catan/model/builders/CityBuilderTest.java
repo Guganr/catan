@@ -36,7 +36,6 @@ public class CityBuilderTest extends ConstructionsTest {
         construction = new CityBuilder();
         elementToRemove = WHEAT;
         boardBuilder = new BoardBuilder(new Board());
-        boardBuilder.start();
         boardBuilder.distributingNumbers();
     }
 
@@ -78,7 +77,7 @@ public class CityBuilderTest extends ConstructionsTest {
         String position = "9G";
         List<PlayerService> players = new ArrayList<>();
         playerService.getPlayer().setConstructions(List.of(new VillageBuilder()));
-        playerService.getPlayer().getConstructions().get(0).setPosition(position);
+        playerService.getPlayer().getConstructions().get(0).setPositionString(position);
         players.add(playerService);
         assertTrue(construction.checkPosition(boardBuilder, players, position));
     }

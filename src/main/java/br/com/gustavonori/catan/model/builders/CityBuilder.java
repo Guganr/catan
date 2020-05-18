@@ -28,7 +28,7 @@ public class CityBuilder extends Constructions {
     public boolean checkPosition(BoardBuilder board, List<PlayerService> playerServiceList, String position){
         AtomicBoolean check = new AtomicBoolean(false);
         playerServiceList.get(0).getPlayer().getConstructions().forEach(constructions -> {
-            if (constructions instanceof VillageBuilder && constructions.getPosition().equals(position))
+            if (constructions instanceof VillageBuilder && constructions.getPositionString().equals(position))
                 check.set(true);
         });
         //ADDERRORMSG

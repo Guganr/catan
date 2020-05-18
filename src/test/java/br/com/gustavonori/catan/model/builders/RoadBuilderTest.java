@@ -37,7 +37,6 @@ public class RoadBuilderTest extends ConstructionsTest {
         construction = new RoadBuilder();
         elementToRemove = WOOD;
         boardBuilder = new BoardBuilder(new Board());
-        boardBuilder.start();
         boardBuilder.distributingNumbers();
     }
 
@@ -80,9 +79,9 @@ public class RoadBuilderTest extends ConstructionsTest {
         List<PlayerService> players = new ArrayList<>();
         players.add(playerService);
         players.add(new PlayerService(new Player(2, "Marjory")));
-        construction.setPosition(position);
+        construction.setPositionString(position);
         assertTrue(construction.checkPosition(boardBuilder, players, position));
-        assertEquals(position, construction.getPosition());
+        assertEquals(position, construction.getPositionString());
     }
 
     @Test
@@ -110,7 +109,7 @@ public class RoadBuilderTest extends ConstructionsTest {
         players.add(playerService);
         PlayerService marjory = new PlayerService(new Player(2, "Marjory"));
         marjory.getPlayer().setConstructions(List.of(new RoadBuilder()));
-        marjory.getPlayer().getConstructions().get(0).setPosition(position);
+        marjory.getPlayer().getConstructions().get(0).setPositionString(position);
         players.add(marjory);
         assertFalse(construction.checkPosition(boardBuilder, players, position));
     }

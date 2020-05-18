@@ -1,6 +1,7 @@
 package br.com.gustavonori.catan.model.builders;
 
 import br.com.gustavonori.catan.model.board.BoardBuilder;
+import br.com.gustavonori.catan.model.board.positions.Positions;
 import br.com.gustavonori.catan.model.interfaces.ConstructionsBuilder;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.elements.Elements;
@@ -18,7 +19,7 @@ public class Constructions implements ConstructionsBuilder {
     private String name;
     private int points;
     private Map<Elements, Integer> elementsToBuild;
-    private String position;
+    private String positionString;
 
     public Constructions(String name, int points, Map<Elements, Integer> elementsToBuild) {
         this.name = name;
@@ -36,12 +37,12 @@ public class Constructions implements ConstructionsBuilder {
         return elementsToBuild;
     }
 
-    public String getPosition() {
-        return position;
+    public String getPositionString() {
+        return positionString;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setPositionString(String positionString) {
+        this.positionString = positionString;
     }
 
     protected boolean isRoadPosition(String position) {
@@ -70,7 +71,7 @@ public class Constructions implements ConstructionsBuilder {
         if (board.getMapping().contains(position)) {
             playerServiceList.forEach(playerService -> {
                 playerService.getPlayer().getConstructions().forEach((constructions) -> {
-                    if (constructions.getPosition().equals(position))
+                    if (constructions.getPositionString().equals(position))
                         check.set(false);
                         //ADDERRORMSG
                 });
@@ -80,6 +81,15 @@ public class Constructions implements ConstructionsBuilder {
             return false;
         }
         return check.get();
+    }
+
+    public boolean checkPosition(BoardBuilder board, String position, Positions positions){
+        if (board.getMapping().contains(position)) {
+            return !positions.isInUse();
+        } else {
+            //ADDERRORMSG
+            return false;
+        }
     }
 
     @Override
