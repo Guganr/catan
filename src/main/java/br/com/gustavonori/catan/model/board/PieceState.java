@@ -9,7 +9,9 @@ public abstract class PieceState {
         this.piece = piece;
     }
 
-    public abstract String onFirstIntersection();
-    public abstract String onMiddleIntersection();
-    public abstract String onLastIntersection();
+    public abstract boolean isComplete();
+    public abstract PieceState getNext();
+    public abstract int getInitIntersectionPiece(int init);
+    public abstract int getInitIntersectionPieceComplement(int init);
+    public abstract int getInit();
 }

@@ -1,5 +1,7 @@
 package br.com.gustavonori.catan.model.board.parts;
 
+import br.com.gustavonori.catan.model.board.FirstIntersection;
+import br.com.gustavonori.catan.model.board.PieceState;
 import br.com.gustavonori.catan.model.board.positions.Intersection;
 import br.com.gustavonori.catan.model.models.elements.Element;
 
@@ -13,6 +15,7 @@ public abstract class Piece {
     protected int number;
     protected List<Piece> intersectionPieces;
     protected int position;
+    protected PieceState state;
 
     public Piece(int id, Element element, List<Intersection> intersection, int number) {
         this.id = id;
@@ -20,11 +23,13 @@ public abstract class Piece {
         this.intersection = intersection;
         this.number = number;
         this.intersectionPieces = new ArrayList<>();
+        this.state = new FirstIntersection(this);
     }
 
     public Piece(List<Intersection> intersection) {
         this.intersection = intersection;
         this.intersectionPieces = new ArrayList<>();
+        this.state = new FirstIntersection(this);
     }
 
     public Piece() {}
@@ -75,6 +80,14 @@ public abstract class Piece {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public PieceState getState() {
+        return state;
+    }
+
+    public void setState(PieceState state) {
+        this.state = state;
     }
 
     public abstract int getInitial(Piece lastPiece);

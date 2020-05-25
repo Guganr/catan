@@ -39,15 +39,6 @@ public class BoardBuilderTest {
         assertEquals(3, brick);
     }
 
-//    @Test
-//    public void calculatePositions(){
-//        List<String> expectedMap = new ArrayList<>();
-//        expectedMap.addAll(List.of("1G","2F","3E","4E","5E","6F","7G","6H","5I","4I", "3I", "2H"));
-//        boardBuilder.populateAlphabet();
-//        List<Positions> positions = boardBuilder.calculatePositions("1G");
-//        assertTrue(expectedMap.containsAll(positions));
-//    }
-
     @Test
     public void goku() {
         boardBuilder.putYourHandsUp();
@@ -61,15 +52,15 @@ public class BoardBuilderTest {
         boardBuilder.buildForTest(firstPositions);
         boardBuilder.getBoard().getPositions();
     }
+
     @Test
-    public void face2() {
+    public void getIntersectionsToBuild2() {
         Piece firstPositions = boardBuilder.createFirstPositions();
         Piece secondPosition = new Border(createSecondPosition(firstPositions));
-        Piece thirdPosition = new Internal(createThirdPosition(firstPositions, secondPosition));
         firstPositions.getIntersectionPieces().add(secondPosition);
-        List<Intersection> intersectionsToBuildnew = boardBuilder.getIntersectionsToBuild(firstPositions);
+        Piece thirdPosition = new Internal(createThirdPosition(firstPositions, secondPosition));
         firstPositions.getIntersectionPieces().add(thirdPosition);
-        List<Intersection> intersectionsToBuild3 = boardBuilder.getIntersectionsToBuild(firstPositions);
+        boardBuilder.getIntersectionsToBuild2(firstPositions);
         boardBuilder.getBoard().getPositions();
     }
 

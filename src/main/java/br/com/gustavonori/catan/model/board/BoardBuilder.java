@@ -6,6 +6,7 @@ import br.com.gustavonori.catan.model.board.positions.Edge;
 import br.com.gustavonori.catan.model.board.positions.Intersection;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.elements.Elements;
+import java.util.Comparator;
 
 import javax.management.AttributeList;
 import java.util.*;
@@ -45,107 +46,39 @@ public class BoardBuilder {
         build(piece);
     }
 
-    public List<Intersection> getIntersectionsToBuild(Piece piece) {
-        int init = piece.getInitial();
-        Intersection intersectionVol;
+    public List<Intersection> getIntersectionsToBuild2(Piece piece) {
+        PieceState state = piece.getState();
+        while (state.isComplete())
+            state = state.getNext();
         List<Intersection> pieceIntersections = piece.getIntersection();
         List<Intersection> intersectionList = new ArrayList<>();
-        Iterator<Intersection> iterator = pieceIntersections.iterator();
-        while(iterator.hasNext()) {
-            if (iterator.next() == pieceIntersections.get(init)) {
-                intersectionVol = pieceIntersections.get(init);
-                intersectionVol.setInitPosition(getInitIntersectionPieceParent(init, piece.getIntersectionPieces().size()));
-                intersectionList.add(intersectionVol);
-                if (iterator.hasNext()) {
-                    intersectionVol = iterator.next();
-                    init = pieceIntersections.indexOf(intersectionVol);
-                    intersectionVol.setInitPosition(
-                            getInitIntersectionPieceParent(init, piece.getIntersectionPieces().size())
-                    );
-                    intersectionList.add(intersectionVol);
-                }
-            }
-        }
-        if (piece.getIntersectionPieces().size() > 0) {
-            Piece lastPiece = piece.getIntersectionPieces()
-                    .get(piece.getIntersectionPieces().size() - 1);
-            Iterator<Intersection> lastPieceIterator = lastPiece
-                    .getIntersection().iterator();
+        Intersection intersectionVol;
+        int init = state.getInit();
+        do {
+            intersectionVol = pieceIntersections.get(init);
+            intersectionVol.setInitPosition(state.getInitIntersectionPiece(init));
+            init++;
+            intersectionList.add(intersectionVol);
+        } while (init < state.getInit() + 2);
 
-            Intersection previous = new Intersection();
-            while(lastPieceIterator.hasNext()) {
-                Intersection next = lastPieceIterator.next();
-                for (Intersection intersection : intersectionList) {
-                    if (intersection == next) {
-                        int position = lastPiece.getIntersection().indexOf(previous);
-                        if (position == -1) {
-                            position = lastPiece.getIntersection().size() - 1;
-                            previous = lastPiece.getIntersection().get(position);
-                        }
-                        previous.setInitPosition(
-                                getInitIntersectionPieceChild(position, piece.getIntersectionPieces().size())
-                        );
-                        intersectionList.add(previous);
-                        return intersectionList;
-                    }
-                }
-                previous = next;
+        if (piece.getIntersectionPieces().size() > 0) {
+            Piece lastPiece = piece.getIntersectionPieces().get(piece.getIntersectionPieces().size() - 1);
+            pieceIntersections = lastPiece.getIntersection();
+            Iterator<Intersection> lastPieceIterator = pieceIntersections.iterator();
+            while (init != -1 && lastPieceIterator.hasNext()) {
+                init = pieceIntersections.indexOf(lastPieceIterator.next());
+            }
+            if (init > -1) {
+                if (intersectionList.contains(pieceIntersections.get(init)))
+                    init--;
+                intersectionVol = pieceIntersections.get(init);
+                intersectionVol.setInitPosition(state.getInitIntersectionPieceComplement(init));
+                intersectionList.add(intersectionVol);
             }
         }
         return intersectionList;
     }
 
-    private int getInitIntersectionPieceParent(int initial, int intersection) {
-        if (intersection == 0) {
-            switch (initial) {
-                case 2:
-                    return 0;
-                case 3:
-                    return 5;
-            }
-        }
-        if (intersection == 1) {
-            switch (initial) {
-                case 3:
-                    return 1;
-                case 4:
-                    return 0;
-            }
-        }
-        if (intersection == 2) {
-            switch (initial) {
-                case 4:
-                    return 2;
-                case 5:
-                    return 1;
-            }
-        }
-        return 0;
-    }
-    private int getInitIntersectionPieceChild(int initial, int intersection) {
-        if (intersection == 1){
-            switch (initial) {
-                case 4:
-                    return 2;
-                case 5:
-                    return 1;
-            }
-        }
-        if (intersection == 2){
-            switch (initial) {
-                case 0:
-                    return 2;
-                case 5:
-                    return 3;
-            }
-        }
-        return 0;
-    }
-
-
-    private Edge getIntersectionEdge(List<Intersection> intersection) {
-        return new Edge(99);
-    }
 
     public void buildForTest(Piece piece) {
         build(piece);
@@ -159,7 +92,7 @@ public class BoardBuilder {
         allIntersections.addAll(piece.getIntersection());
         do {
             while (pieceForBuild.hasNext()) {
-                List<Intersection> intersectionsToBuild = getIntersectionsToBuild(pieceForBuild);
+                List<Intersection> intersectionsToBuild = getIntersectionsToBuild2(pieceForBuild);
                 List<Intersection> intersectionList = new ArrayList<>();
                 Intersection intersection;
                 Edge lastEdge = new Edge();
@@ -182,7 +115,6 @@ public class BoardBuilder {
                         }
                     } else {
                         intersection = new Intersection(getLastIntersection(allIntersections).getId() + 1);
-                        //Adicionar I14 no 4° pedaço, se não, ele adicionará estrada que não há conexão
                         if (i > 0)
                             edgeList.add(lastEdge);
                     }
