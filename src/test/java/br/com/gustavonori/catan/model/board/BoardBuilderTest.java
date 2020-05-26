@@ -1,15 +1,16 @@
 package br.com.gustavonori.catan.model.board;
 
+import br.com.gustavonori.catan.model.board.positions.Edge;
+import br.com.gustavonori.catan.model.board.positions.Intersection;
 import br.com.gustavonori.catan.model.constructions.ConstructionsTest;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.elements.Elements;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 import static br.com.gustavonori.catan.model.models.elements.Elements.WHEAT;
@@ -39,11 +40,30 @@ public class BoardBuilderTest {
     }
 
     @Test
-    public void calculatePositions(){
-        List<String> expectedMap = new ArrayList<>();
-        expectedMap.addAll(List.of("1G","2F","3E","4E","5E","6F","7G","6H","5I","4I", "3I", "2H"));
-        boardBuilder.populateAlphabet();
-        Map<Integer, String> positions = boardBuilder.calculatePositions("1G");
-        assertTrue(expectedMap.containsAll(positions.values()));
+    public void start(){
+        boardBuilder.start();
+        System.out.println(boardBuilder);
+    }
+
+    @Test
+    public void pieceGetNext(){
+        Piece firstPiece = boardBuilder.createFirstPiece();
+        List<Edge> edges = new ArrayList<>();
+        Edge firstEdge = firstPiece.getEdges().get(0);
+        edges.add(firstEdge);
+        edges.add(new Edge(7, List.of(firstEdge.getIntersections().get(1), new Intersection(7))));
+        firstPiece.getIntersectionPieces().add(new Piece(edges));
+
+
+        List<Edge> edges2 = new ArrayList<>();
+        Edge secondEdge = firstPiece.getEdges().get(1);
+        edges2.add(secondEdge);
+        edges2.add(new Edge(8, List.of(secondEdge.getIntersections().get(1), new Intersection(7))));
+        firstPiece.getIntersectionPieces().add(new Piece(edges2));
+        Optional<Edge> nextOptional = firstPiece.getNext();
+        Edge next = new Edge();
+        if (nextOptional.isPresent())
+            next = nextOptional.get();
+        Assert.assertEquals(3, next.getId());
     }
 }

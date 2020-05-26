@@ -1,9 +1,12 @@
 package br.com.gustavonori.catan.model.board;
 
+import br.com.gustavonori.catan.model.board.positions.Edge;
+import br.com.gustavonori.catan.model.board.positions.Intersection;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.thief.Thief;
 
+import javax.management.AttributeList;
 import java.util.*;
 
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
@@ -20,33 +23,101 @@ public class BoardBuilder {
         return this.board;
     }
 
-    public List<String> getMapping(){
-        List<String> map = new ArrayList<>();
-        board.getPositions().forEach((position) -> {
-            position.getMapping().forEach((key, value) -> {
-                map.add(value);
-            });
-        });
-        return map;
+    public void start() {
+        Piece firstPiece = createFirstPiece();
+        board.getPositions().add(new BoardPosition(firstPiece));
+        createBoard(firstPiece);
+        System.out.println(firstPiece);
     }
 
-    public void start() {
-        List<Element> elementsList = populateElements();
-        populateAlphabet();
-        initPositionsOnTheBoard();
-        for (int initPosition = 0; initPosition < 19; initPosition++) {
-            Element element = elementsList.get(initPosition);
-            int number = 0;
-            if (initPosition == 12) {
-                elementsList.add(element);
-                element = new Thief(THIEF);
-                number = 7;
+    private void createBoard(Piece firstPiece) {
+        Optional<Piece> nextPiece = Optional.ofNullable(firstPiece);
+        Piece pieceInUse = new Piece();
+        List<Edge> allEdges = new ArrayList<>();
+        while (nextPiece.isPresent() && board.getPositions().size() < 20) {
+            pieceInUse = nextPiece.get();
+            addAllEdges(allEdges, pieceInUse.getEdges());
+            while (pieceInUse.hasNext()) {
+                Optional<Edge> edgeIntersectionOptional = pieceInUse.getNext();
+                Edge lastEdge = getLastEdge(allEdges);
+                if (edgeIntersectionOptional.isPresent()) {
+                    Piece newPiece = new Piece();
+                    Edge edgeIntersection = edgeIntersectionOptional.get();
+                    Intersection lastIntersection = getLastIntersection(allEdges);
+                    List<Edge> edges = new ArrayList<>();
+                    edges.add(edgeIntersection);
+                    while (edges.size() < 6) {
+                        Intersection newIntersection = new Intersection(lastIntersection.getId() + 1);
+                        Edge newEdge = new Edge(lastEdge.getId() + 1);
+                        newEdge.getIntersections().add(lastIntersection);
+                        if (edges.size() == 5)
+                            newIntersection = edges.get(0).getIntersections().get(0);
+
+                        newEdge.getIntersections().add(newIntersection);
+                        edges.add(newEdge);
+                        addAllEdges(allEdges, pieceInUse.getEdges());
+                        lastEdge = newEdge;
+                    }
+                    newPiece.getEdges().addAll(edges);
+                    pieceInUse.addNewIntersectionPiece(newPiece);
+                    board.getPositions().add(new BoardPosition(newPiece));
+                }
             }
-            board.getPositions().add(
-                    new BoardPosition(initPosition, element,
-                            calculatePositions(initPositionsOnTheBoard.get(initPosition)), number)
-            );
+            nextPiece = pieceInUse.getNextPiece();
         }
+    }
+
+    private Intersection getLastIntersection(List<Edge> allEdges) {
+        Intersection lastIntersection = new Intersection();
+        for (Edge edge : allEdges) {
+            for (Intersection intersection : edge.getIntersections()) {
+                if (intersection.getId() > lastIntersection.getId())
+                    lastIntersection = intersection;
+            }
+        }
+        return lastIntersection;
+    }
+
+    private void addAllEdges(List<Edge> allEdges, List<Edge> edges) {
+        for (Edge edge : edges) {
+            if (!allEdges.contains(edge))
+                allEdges.add(edge);
+        }
+    }
+
+    private Edge getLastEdge(List<Edge> allEdges) {
+        Edge lastEdge = new Edge();
+        for (Edge edge : allEdges) {
+            if (edge.getId() > lastEdge.getId())
+                lastEdge = edge;
+        }
+        return lastEdge;
+    }
+
+    public Piece createFirstPiece() {
+        List<Edge> edges = new ArrayList<>();
+        List<Intersection> allIntersections = new ArrayList<>();
+        Intersection lastIntersection = new Intersection();
+        int intersectionsId = 1;
+        for (int i = 1; i < 7; i++) {
+            Edge edge = new Edge(i);
+            if (i == 1) {
+                Intersection intersection = new Intersection(intersectionsId);
+                edge.getIntersections().add(intersection);
+                allIntersections.add(intersection);
+            } else {
+                edge.getIntersections().add(lastIntersection);
+            }
+            if (i < 6) {
+                lastIntersection = new Intersection(++intersectionsId);
+                edge.getIntersections().add(lastIntersection);
+                allIntersections.add(lastIntersection);
+            } else {
+                edge.getIntersections().add(allIntersections.get(0));
+            }
+            edges.add(edge);
+        }
+        return new Piece(edges);
     }
 
     public void distributingNumbers() {
@@ -79,88 +150,13 @@ public class BoardBuilder {
         Collections.shuffle(elementsList);
         return elementsList;
     }
-
-    public Map<Integer, String> calculatePositions(String init) {
-        Map<Integer, String> board = new HashMap<>();
-        int length = init.length() - 1;
-        String letter = String.valueOf(init.charAt(length));
-        int key = Integer.parseInt(init.substring(0, length));
-
-        for (int i = 0; i < 12; i++) {
-            String val = key + letter;
-            board.put(i, val);
-            if (i < 6)
-                key++;
-            else
-                key--;
-            letter = getNextLetter(letter, i);
-        }
-        return board;
-    }
-
-    private Integer getAlphabetByValue(String letra) {
-        return alphabet.entrySet().stream().filter(a -> a.getValue().equals(letra)).findFirst().get().getKey();
-    }
-
-    private String getNextLetter(String letra, int i) {
-        int letraKey = getAlphabetByValue(letra);
-        if (i < 2 || i == 10)
-            letraKey--;
-        else if (i > 3 && i < 8)
-            letraKey++;
-        return alphabet.get(letraKey);
-    }
-
-    public void populateAlphabet() {
-        alphabet = new HashMap<>();
-        alphabet.put(1, "A");
-        alphabet.put(2, "B");
-        alphabet.put(3, "C");
-        alphabet.put(4, "D");
-        alphabet.put(5, "E");
-        alphabet.put(6, "F");
-        alphabet.put(7, "G");
-        alphabet.put(8, "H");
-        alphabet.put(9, "I");
-        alphabet.put(10, "J");
-        alphabet.put(11, "K");
-        alphabet.put(12, "L");
-        alphabet.put(13, "M");
-        alphabet.put(14, "N");
-        alphabet.put(15, "O");
-        alphabet.put(16, "P");
-        alphabet.put(17, "Q");
-        alphabet.put(18, "R");
-        alphabet.put(19, "S");
-        alphabet.put(20, "T");
-        alphabet.put(21, "U");
-    }
-
-    private void initPositionsOnTheBoard() {
-        initPositionsOnTheBoard = new HashMap<>();
-        //PRIMEIRA FILEIRA
-        initPositionsOnTheBoard.put(0, "1G");
-        initPositionsOnTheBoard.put(1, "5E");
-        initPositionsOnTheBoard.put(2, "9C");
-        initPositionsOnTheBoard.put(3, "13E");
-        initPositionsOnTheBoard.put(4, "17G");
-        //SEGUNDA FILEIRA
-        initPositionsOnTheBoard.put(5, "1K");
-        initPositionsOnTheBoard.put(6, "5I");
-        initPositionsOnTheBoard.put(7, "9G");
-        initPositionsOnTheBoard.put(8, "13I");
-        initPositionsOnTheBoard.put(9, "17K");
-        //TERCEIRA FILEIRA
-        initPositionsOnTheBoard.put(10, "1O");
-        initPositionsOnTheBoard.put(11, "5M");
-        initPositionsOnTheBoard.put(12, "9K");
-        initPositionsOnTheBoard.put(13, "13M");
-        initPositionsOnTheBoard.put(14, "17O");
-        //TERCEIRA FILEIRA
-        initPositionsOnTheBoard.put(15, "5Q");
-        initPositionsOnTheBoard.put(16, "9O");
-        initPositionsOnTheBoard.put(17, "13Q");
-        //TERCEIRA FILEIRA
-        initPositionsOnTheBoard.put(18, "9S");
+    public List<String> getMapping(){
+        List<String> map = new ArrayList<>();
+        board.getPositions().forEach((position) -> {
+            position.getMapping().forEach((key, value) -> {
+                map.add(value);
+            });
+        });
+        return map;
     }
 }
