@@ -1,14 +1,16 @@
 package br.com.gustavonori.catan.model.board;
 
 import br.com.gustavonori.catan.model.board.positions.Edge;
+import br.com.gustavonori.catan.model.board.positions.Intersection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class Piece {
-    List<Edge> edges;
-    List<Piece> intersectionPieces;
+    private int id;
+    private List<Edge> edges;
+    private List<Piece> intersectionPieces;
 
     public Piece() {
         this.edges = new ArrayList<>();
@@ -23,6 +25,14 @@ public class Piece {
     public Piece(List<Edge> edges, List<Piece> intersectionPieces) {
         this.edges = edges;
         this.intersectionPieces = intersectionPieces;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Edge> getEdges() {
@@ -45,6 +55,13 @@ public class Piece {
         return intersectionPieces.size() < 6;
     }
 
+    public Piece getNextIntersectionPieceAvailable() {
+        for (Piece piece : intersectionPieces) {
+            if (piece.getIntersectionPieces().size() < 6)
+                return piece;
+        }
+        return this.getIntersectionPieces().get(0);
+    }
     public Optional<Edge> getNext() {
         boolean check = true;
         for (Edge edge : edges) {
@@ -64,6 +81,11 @@ public class Piece {
     public void addNewIntersectionPiece(Piece newPiece) {
         intersectionPieces.add(newPiece);
         newPiece.intersectionPieces.add(this);
+        if (intersectionPieces.size() > 1) {
+            Piece lastIntersectionPiece = intersectionPieces.get(intersectionPieces.size() - 2);
+            newPiece.intersectionPieces.add(lastIntersectionPiece);
+            lastIntersectionPiece.intersectionPieces.add(newPiece);
+        }
     }
 
     public Optional<Piece> getNextPiece() {
@@ -72,5 +94,24 @@ public class Piece {
                 return Optional.of(piece);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Piece").append(id);
+        edges.forEach(e -> {
+            sb.append("(").append(e.toString()).append(") ");
+        });
+        return sb.toString();
+    }
+
+    public void connectFirstAndLastIntersectionPieces() {
+        if (hasNext()) {
+            Piece firstIntersection = intersectionPieces.get(0);
+            Piece lastIntersection = intersectionPieces.get(intersectionPieces.size() - 1);
+            firstIntersection.intersectionPieces.add(lastIntersection);
+            lastIntersection.intersectionPieces.add(firstIntersection);
+        }
     }
 }

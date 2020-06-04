@@ -57,21 +57,4 @@ public class Intersection {
         return construction instanceof CityBuilder || construction instanceof VillageBuilder;
     }
 
-//    public Edge getLastEdge() {
-//        return edges.get(edges.size() - 1);
-//    }
-//
-//    public boolean isCompleteOfEdges(){
-//        return this.edges.size() < 4;
-//    }
-//
-//    public List<Edge> getNext() {
-//        if (edges.isEmpty())
-//            return emptyList();
-//        if (!edges.get(1).isConnected())
-//            return singletonList(edges.get(1));
-//        if (!edges.get(2).isConnected())
-//            return singletonList(edges.get(2));
-//        return emptyList();
-//    }
 }

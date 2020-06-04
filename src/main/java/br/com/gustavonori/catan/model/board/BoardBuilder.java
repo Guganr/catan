@@ -15,10 +15,10 @@ public class BoardBuilder {
     private Map<Integer, String> alphabet;
     private Map<Integer, String> initPositionsOnTheBoard;
     private Board board;
-
     public BoardBuilder(Board board) {
         this.board = new Board();
     }
+
     public Board getBoard(){
         return this.board;
     }
@@ -31,10 +31,11 @@ public class BoardBuilder {
     }
 
     private void createBoard(Piece firstPiece) {
+        int idPiece = 1;
         Optional<Piece> nextPiece = Optional.ofNullable(firstPiece);
         Piece pieceInUse = new Piece();
         List<Edge> allEdges = new ArrayList<>();
-        while (nextPiece.isPresent() && board.getPositions().size() < 20) {
+        while (nextPiece.isPresent() && idPiece < 19) {
             pieceInUse = nextPiece.get();
             addAllEdges(allEdges, pieceInUse.getEdges());
             while (pieceInUse.hasNext()) {
@@ -42,29 +43,97 @@ public class BoardBuilder {
                 Edge lastEdge = getLastEdge(allEdges);
                 if (edgeIntersectionOptional.isPresent()) {
                     Piece newPiece = new Piece();
+                    newPiece.setId(idPiece);
                     Edge edgeIntersection = edgeIntersectionOptional.get();
+                    Intersection lastEdgeIntersection = edgeIntersection.getIntersections().get(0);
                     Intersection lastIntersection = getLastIntersection(allEdges);
                     List<Edge> edges = new ArrayList<>();
                     edges.add(edgeIntersection);
-                    while (edges.size() < 6) {
-                        Intersection newIntersection = new Intersection(lastIntersection.getId() + 1);
-                        Edge newEdge = new Edge(lastEdge.getId() + 1);
-                        newEdge.getIntersections().add(lastIntersection);
-                        if (edges.size() == 5)
-                            newIntersection = edges.get(0).getIntersections().get(0);
-
+                    Intersection newIntersection = new Intersection();
+                    Edge newEdge = new Edge();
+                    if (pieceInUse.getIntersectionPieces().size() > 0) {
+                        Edge commonEdge = getCommonEdge(edges, pieceInUse);
+                        edges.add(commonEdge);
+                    } else {
+                        newEdge = new Edge(lastEdge.getId() + 1);
+                        newEdge.getIntersections().add(lastEdgeIntersection);
+                        newIntersection = new Intersection(lastIntersection.getId() + 1);
                         newEdge.getIntersections().add(newIntersection);
                         edges.add(newEdge);
-                        addAllEdges(allEdges, pieceInUse.getEdges());
                         lastEdge = newEdge;
+                        lastIntersection = newIntersection;
+                    }
+                    addAllEdges(allEdges, pieceInUse.getEdges());
+                    while (edges.size() < 6) {
+                        newEdge = new Edge(lastEdge.getId() + 1);
+                        newEdge.getIntersections().add(lastIntersection);
+
+                        if (edges.size() == 5) {
+                            if (pieceInUse.getIntersectionPieces().size() == 5) {
+                                if (joinFistAndLastPiece(pieceInUse, lastEdge, newPiece, edges))
+                                    break;
+                            } else {
+                                lastEdgeIntersection = edges.get(0).getIntersections().get(1);
+                                newEdge.getIntersections().add(lastEdgeIntersection);
+                            }
+                        } else {
+                            if (pieceInUse.getIntersectionPieces().size() < 5 || edges.size() != 4) {
+                                newIntersection = new Intersection(lastIntersection.getId() + 1);
+                                newEdge.getIntersections().add(newIntersection);
+                            }
+                        }
+                        edges.add(newEdge);
+                        addAllEdges(allEdges, edges);
+                        lastEdge = newEdge;
+                        lastIntersection = newIntersection;
                     }
                     newPiece.getEdges().addAll(edges);
                     pieceInUse.addNewIntersectionPiece(newPiece);
                     board.getPositions().add(new BoardPosition(newPiece));
+                    idPiece++;
                 }
             }
+            pieceInUse.connectFirstAndLastIntersectionPieces();
             nextPiece = pieceInUse.getNextPiece();
         }
+    }
+
+    private boolean joinFistAndLastPiece(Piece pieceInUse, Edge lastEdge, Piece newPiece, List<Edge> edges) {
+        Piece firstPieceForJoin = pieceInUse.getNextIntersectionPieceAvailable();
+        Optional<Edge> nextEdgeFirstIntOptional = firstPieceForJoin.getNext();
+        if (nextEdgeFirstIntOptional.isPresent()) {
+            Edge nextEdgeFirstInt = nextEdgeFirstIntOptional.get();
+            edges.get(edges.size() - 1).getIntersections().add(nextEdgeFirstInt.getLastIntersection());
+            edges.add(nextEdgeFirstInt);
+            if (lastEdge.getIntersections().size() < 2) {
+                lastEdge.getIntersections().add(nextEdgeFirstInt.getLastIntersection());
+            }
+            firstPieceForJoin.getIntersectionPieces().add(newPiece);
+            newPiece.getIntersectionPieces().add(firstPieceForJoin);
+            return true;
+        }
+        return false;
+    }
+
+
+    private Edge getCommonEdge(List<Edge> edges, Piece pieceInUse) {
+        int position = 1;
+        Piece piece = pieceInUse.getIntersectionPieces().get(pieceInUse.getIntersectionPieces().size() - 1);
+        Edge edge = piece.getEdges().get(piece.getEdges().size() - position);
+        while (isEdgeAvailable(edge)) {
+            position++;
+            edge = piece.getEdges().get(piece.getEdges().size() - position);
+        }
+        return edge;
+    }
+
+    private boolean isEdgeAvailable(Edge edge) {
+        int i = 0;
+        for (BoardPosition boardPosition : board.getPositions()) {
+           if (boardPosition.getPiece().getEdges().contains(edge))
+               i++;
+        }
+        return i > 1;
     }
 
     private Intersection getLastIntersection(List<Edge> allEdges) {

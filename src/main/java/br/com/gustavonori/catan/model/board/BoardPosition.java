@@ -53,4 +53,14 @@ public class BoardPosition {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
+
 }
