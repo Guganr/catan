@@ -20,4 +20,14 @@ public class Board {
     public void setPositions(List<BoardPosition> positions) {
         this.positions = positions;
     }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        positions.forEach(p -> {
+            sb.append("(").append(p.getPiece().toString()).append(") ");
+        });
+        return sb.toString();
+    }
 }

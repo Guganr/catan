@@ -8,6 +8,7 @@ public class BoardPosition {
     private int position;
     private Element element;
     private Map<Integer, String> mapping;
+    private Piece piece;
     private int number;
 
     public BoardPosition(int position, Element element, Map<Integer, String> mapping, int number) {
@@ -15,6 +16,10 @@ public class BoardPosition {
         this.element = element;
         this.mapping = mapping;
         this.number = number;
+    }
+
+    public BoardPosition(Piece piece) {
+        this.piece = piece;
     }
 
     public int getPosition() {
@@ -48,4 +53,14 @@ public class BoardPosition {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
+
 }
