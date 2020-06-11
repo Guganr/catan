@@ -114,4 +114,21 @@ public class Piece {
             lastIntersection.intersectionPieces.add(firstIntersection);
         }
     }
+
+    public boolean joinFistAndLastPiece(Edge lastEdge, Piece newPiece, List<Edge> edges) {
+        Piece firstPieceForJoin = this.getNextIntersectionPieceAvailable();
+        Optional<Edge> nextEdgeFirstIntOptional = firstPieceForJoin.getNext();
+        if (nextEdgeFirstIntOptional.isPresent()) {
+            Edge nextEdgeFirstInt = nextEdgeFirstIntOptional.get();
+            edges.get(edges.size() - 1).getIntersections().add(nextEdgeFirstInt.getLastIntersection());
+            edges.add(nextEdgeFirstInt);
+            if (lastEdge.getIntersections().size() < 2) {
+                lastEdge.getIntersections().add(nextEdgeFirstInt.getLastIntersection());
+            }
+            firstPieceForJoin.getIntersectionPieces().add(newPiece);
+            newPiece.getIntersectionPieces().add(firstPieceForJoin);
+            return true;
+        }
+        return false;
+    }
 }
