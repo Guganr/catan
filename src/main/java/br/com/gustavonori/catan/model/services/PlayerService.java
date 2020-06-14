@@ -1,7 +1,9 @@
 package br.com.gustavonori.catan.model.services;
 
 import br.com.gustavonori.catan.model.board.BoardBuilder;
+import br.com.gustavonori.catan.model.board.positions.Edge;
 import br.com.gustavonori.catan.model.builders.Constructions;
+import br.com.gustavonori.catan.model.builders.RoadBuilder;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
 import br.com.gustavonori.catan.model.models.elements.Elements;
@@ -71,8 +73,19 @@ public class PlayerService {
         construction.build(this);
     }
 
+    public void buildingRoad(Edge edge){
+        RoadBuilder road = new RoadBuilder();
+        if (road.checkElements(player.getElements())) {
+            road.build(edge, this);
+        }
+    }
+
     private int rollTheDice() {
         Random r = new Random();
         return r.nextInt((12 - 1) + 1) + 1;
+    }
+
+    public boolean isAPlayerRoad(Edge edge) {
+        return edge.hasRoad() && player.getConstructions().contains(edge.getRoad());
     }
 }

@@ -1,10 +1,15 @@
 package br.com.gustavonori.catan.model.models.player;
 
+import br.com.gustavonori.catan.model.board.BoardBuilder;
+import br.com.gustavonori.catan.model.board.positions.Edge;
+import br.com.gustavonori.catan.model.board.positions.Intersection;
 import br.com.gustavonori.catan.model.builders.RoadBuilder;
 import br.com.gustavonori.catan.model.builders.VillageBuilder;
 import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.services.PlayerService;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -14,7 +19,7 @@ import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class PlayerServiceTest {
+public class PlayerServiceTest extends ElementsForCatanTest {
     private Player player;
     private PlayerService playerService;
 
@@ -22,6 +27,7 @@ public class PlayerServiceTest {
     public void setUp() {
         player = new Player(1, "Gustavo");
         playerService = new PlayerService(player);
+        setUpBoard();
     }
 
     @Test
@@ -75,10 +81,20 @@ public class PlayerServiceTest {
     @Test
     public void buildingRoad() {
         Map<Elements, Integer> elementsAdd = new HashMap<>();
-        elementsAdd.put(BRICK, 1);
-        elementsAdd.put(WOOD, 1);
+        elementsAdd.put(BRICK, 3);
+        elementsAdd.put(WOOD, 3);
         addElements(elementsAdd);
-        playerService.removingElements(RoadBuilder.elementsToBuild);
+        Edge edge3 = board.getEdgeById(3);
+        Edge edge15 = board.getEdgeById(15);
+        Edge edge16 = board.getEdgeById(16);
+        playerService.buildingRoad(edge3);
+        playerService.buildingRoad(edge15);
+        playerService.buildingRoad(edge16);
+
+        Player otherPlayer = new Player(2, "Marjory");
+        PlayerService otherPlayerService = new PlayerService(otherPlayer);
+        Edge edge2 = board.getEdgeById(2);
+        otherPlayerService.buildingRoad(edge2);
 
         assertThat(player.getElements(), hasItems(
                 allOf(
@@ -90,6 +106,49 @@ public class PlayerServiceTest {
                         hasProperty("quantity", is(0))
                 )
         ));
+
+        Intersection intersection = board.getIntersectionById(3);
+        Assert.assertTrue(board.isThereASquenceOfRoads(intersection, playerService));
+    }
+
+    @Test
+    public void buildingRoadFailed2() {
+        Map<Elements, Integer> elementsAdd = new HashMap<>();
+        elementsAdd.put(BRICK, 2);
+        elementsAdd.put(WOOD, 2);
+        addElements(elementsAdd);
+        Edge edge3 = board.getEdgeById(3);
+        Edge edge15 = board.getEdgeById(15);
+        playerService.buildingRoad(edge3);
+        playerService.buildingRoad(edge15);
+
+        Player otherPlayer = new Player(2, "Marjory");
+        PlayerService otherPlayerService = new PlayerService(otherPlayer);
+        Edge edge2 = board.getEdgeById(2);
+        Edge edge16 = board.getEdgeById(16);
+        otherPlayerService.buildingRoad(edge2);
+        otherPlayerService.buildingRoad(edge16);
+
+        Intersection intersection = board.getIntersectionById(3);
+        Assert.assertFalse(board.isThereASquenceOfRoads(intersection, playerService));
+    }
+
+    @Test
+    public void buildingRoadFailed() {
+        Map<Elements, Integer> elementsAdd = new HashMap<>();
+        elementsAdd.put(BRICK, 2);
+        elementsAdd.put(WOOD, 2);
+        addElements(elementsAdd);
+        Edge edge3 = board.getEdgeById(3);
+        playerService.buildingRoad(edge3);
+
+        Player otherPlayer = new Player(2, "Marjory");
+        PlayerService otherPlayerService = new PlayerService(otherPlayer);
+        Edge edge2 = board.getEdgeById(2);
+        otherPlayerService.buildingRoad(edge2);
+
+        Intersection intersection = board.getIntersectionById(3);
+        Assert.assertFalse(board.isThereASquenceOfRoads(intersection, playerService));
     }
 
     @Test

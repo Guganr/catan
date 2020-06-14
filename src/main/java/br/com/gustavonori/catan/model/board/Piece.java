@@ -2,10 +2,9 @@ package br.com.gustavonori.catan.model.board;
 
 import br.com.gustavonori.catan.model.board.positions.Edge;
 import br.com.gustavonori.catan.model.board.positions.Intersection;
+import br.com.gustavonori.catan.model.services.PlayerService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Piece {
     private int id;
@@ -130,5 +129,43 @@ public class Piece {
             return true;
         }
         return false;
+    }
+
+    public boolean containsEdgeById(int id) {
+        Optional<Edge> optionalEdge = edges.stream().filter(edge -> edge.getId() == id).findFirst();
+        return optionalEdge.isPresent();
+    }
+
+    public boolean containsIntersectionById(int id) {
+        for (Edge edge : edges) {
+            if (edge.containsIntersectionById(id))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsIntersection(Intersection intersection) {
+        for (Edge edge : edges) {
+            if (edge.getIntersections().contains(intersection))
+                return true;
+        }
+        return false;
+    }
+
+    public void getEdgesByIntersection(Intersection intersection, List<Edge> allEdges, PlayerService playerService) {
+        for (Edge edge : edges) {
+            if (edge.getIntersections().contains(intersection) && !allEdges.contains(edge)) {
+                if (playerService.isAPlayerRoad(edge))
+                   allEdges.add(edge);
+            }
+        }
+    }
+
+    public void getEdgesByIntersection(Intersection intersection, List<Edge> allEdges) {
+        for (Edge edge : edges) {
+            if (edge.getIntersections().contains(intersection) && !allEdges.contains(edge)) {
+                allEdges.add(edge);
+            }
+        }
     }
 }

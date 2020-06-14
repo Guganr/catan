@@ -1,13 +1,14 @@
 package br.com.gustavonori.catan.model.board.positions;
 
+import br.com.gustavonori.catan.model.builders.RoadBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Edge {
     private int id;
-    private boolean inUse;
     List<Intersection> intersections;
-    private boolean connected;
+    RoadBuilder road;
 
     public Edge() {
         this.intersections = new ArrayList<>();
@@ -15,13 +16,11 @@ public class Edge {
 
     public Edge(int id) {
         this.id = id;
-        inUse = false;
         this.intersections = new ArrayList<>();
     }
 
     public Edge(int id, List<Intersection> intersections) {
         this.id = id;
-        this.inUse = false;
         this.intersections = intersections;
     }
     public int getId() {
@@ -32,28 +31,24 @@ public class Edge {
         this.id = id;
     }
 
-    public boolean isInUse() {
-        return inUse;
-    }
-
-    public void setInUse(boolean inUse) {
-        this.inUse = inUse;
-    }
-
-    public boolean isConnected() {
-        return connected;
-    }
-
-    public void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
     public List<Intersection> getIntersections() {
         return intersections;
     }
 
     public void setIntersections(List<Intersection> intersections) {
         this.intersections = intersections;
+    }
+
+    public RoadBuilder getRoad() {
+        return road;
+    }
+
+    public void setRoad(RoadBuilder road) {
+        this.road = road;
+    }
+
+    public boolean isAvailable() {
+        return true;
     }
 
     @Override
@@ -68,5 +63,25 @@ public class Edge {
 
     public Intersection getLastIntersection() {
         return intersections.get(intersections.size() - 1);
+    }
+
+    public boolean containsIntersectionById(int id) {
+        for (Intersection intersection : intersections) {
+            if (intersection.getId() == id)
+                return true;
+        }
+        return false;
+    }
+
+    public Intersection getIntersectionById(int id) {
+        for (Intersection intersection : intersections) {
+            if (intersection.getId() == id)
+                return intersection;
+        }
+        return null;
+    }
+
+    public boolean hasRoad() {
+        return road != null;
     }
 }

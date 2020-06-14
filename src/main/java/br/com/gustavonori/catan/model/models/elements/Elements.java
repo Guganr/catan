@@ -6,5 +6,5 @@ public enum Elements {
     SHEEP,
     WHEAT,
     WOOD,
-    THIEF;
+    DESERT;
 }

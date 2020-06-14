@@ -4,9 +4,8 @@ import br.com.gustavonori.catan.model.board.positions.Edge;
 import br.com.gustavonori.catan.model.board.positions.Intersection;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.elements.Elements;
-import br.com.gustavonori.catan.model.thief.Thief;
+import br.com.gustavonori.catan.model.thief.Desert;
 
-import javax.management.AttributeList;
 import java.util.*;
 
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
@@ -25,9 +24,49 @@ public class BoardBuilder {
 
     public void start() {
         Piece firstPiece = createFirstPiece();
-        board.getPositions().add(new BoardPosition(firstPiece));
+        BoardPosition boardPosition = new BoardPosition(firstPiece);
+        boardPosition.setElement(new Element(DESERT));
+        board.getPositions().add(boardPosition);
         createBoard(firstPiece);
-        System.out.println(firstPiece);
+        populateElements(board);
+    }
+
+    private void populateElements(Board board) {
+        List<Element> elements = populateElements();
+        for (Element element : elements) {
+            for (BoardPosition position : board.getPositions()) {
+                if (position.getElement() == null) {
+                    position.setElement(element);
+                    break;
+                }
+            }
+        }
+    }
+
+    public Piece createFirstPiece() {
+        List<Edge> edges = new ArrayList<>();
+        List<Intersection> allIntersections = new ArrayList<>();
+        Intersection lastIntersection = new Intersection();
+        int intersectionsId = 1;
+        for (int i = 1; i < 7; i++) {
+            Edge edge = new Edge(i);
+            if (i == 1) {
+                Intersection intersection = new Intersection(intersectionsId);
+                edge.getIntersections().add(intersection);
+                allIntersections.add(intersection);
+            } else {
+                edge.getIntersections().add(lastIntersection);
+            }
+            if (i < 6) {
+                lastIntersection = new Intersection(++intersectionsId);
+                edge.getIntersections().add(lastIntersection);
+                allIntersections.add(lastIntersection);
+            } else {
+                edge.getIntersections().add(allIntersections.get(0));
+            }
+            edges.add(edge);
+        }
+        return new Piece(edges);
     }
 
     private void createBoard(Piece firstPiece) {
@@ -160,38 +199,12 @@ public class BoardBuilder {
         return lastEdge;
     }
 
-    public Piece createFirstPiece() {
-        List<Edge> edges = new ArrayList<>();
-        List<Intersection> allIntersections = new ArrayList<>();
-        Intersection lastIntersection = new Intersection();
-        int intersectionsId = 1;
-        for (int i = 1; i < 7; i++) {
-            Edge edge = new Edge(i);
-            if (i == 1) {
-                Intersection intersection = new Intersection(intersectionsId);
-                edge.getIntersections().add(intersection);
-                allIntersections.add(intersection);
-            } else {
-                edge.getIntersections().add(lastIntersection);
-            }
-            if (i < 6) {
-                lastIntersection = new Intersection(++intersectionsId);
-                edge.getIntersections().add(lastIntersection);
-                allIntersections.add(lastIntersection);
-            } else {
-                edge.getIntersections().add(allIntersections.get(0));
-            }
-            edges.add(edge);
-        }
-        return new Piece(edges);
-    }
-
     public void distributingNumbers() {
         List<Integer> numbers = new ArrayList<>(List.of(2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12));
         Collections.shuffle(numbers);
         int i = 0;
         for (BoardPosition boardPosition : board.getPositions()) {
-            if (!boardPosition.getElement().getName().equals(THIEF))
+            if (!boardPosition.getElement().getName().equals(DESERT))
                 boardPosition.setNumber(numbers.get(i));
             else
                 numbers.add(numbers.get(i));

@@ -90,46 +90,4 @@ public class VillageBuilderTest extends ConstructionsTest {
                 allOf(
                         hasProperty("name", is("VILLAGE")))));
     }
-
-
-    @Test
-    public void testCheckPositionSuccess(){
-        position = "9G";
-        List<PlayerService> players = new ArrayList<>();
-        players.add(playerService);
-        players.add(new PlayerService(new Player(2, "Marjory")));
-        construction.setPosition(position);
-        assertTrue(construction.checkPosition(boardBuilder, players, position));
-        assertEquals(position, construction.getPosition());
-    }
-
-    @Test
-    public void testCheckPositionWithoutNumberImpair(){
-        position = "10H";
-        List<PlayerService> players = new ArrayList<>();
-        players.add(playerService);
-        players.add(new PlayerService(new Player(2, "Marjory")));
-        assertFalse(construction.checkPosition(boardBuilder, players, position));
-    }
-
-    @Test
-    public void testCheckPositionOutOfRange(){
-        position = "1A";
-        List<PlayerService> players = new ArrayList<>();
-        players.add(playerService);
-        players.add(new PlayerService(new Player(2, "Marjory")));
-        assertFalse(construction.checkPosition(boardBuilder, players, position));
-    }
-
-    @Test
-    public void testCheckPositionInUse(){
-        String position = "9G";
-        List<PlayerService> players = new ArrayList<>();
-        players.add(playerService);
-        PlayerService marjory = new PlayerService(new Player(2, "Marjory"));
-        marjory.getPlayer().setConstructions(List.of(new RoadBuilder()));
-        marjory.getPlayer().getConstructions().get(0).setPosition(position);
-        players.add(marjory);
-        assertFalse(construction.checkPosition(boardBuilder, players, position));
-    }
 }
