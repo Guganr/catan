@@ -11,8 +11,6 @@ import java.util.*;
 import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 
 public class BoardBuilder {
-    private Map<Integer, String> alphabet;
-    private Map<Integer, String> initPositionsOnTheBoard;
     private Board board;
     public BoardBuilder(Board board) {
         this.board = new Board();
@@ -28,11 +26,10 @@ public class BoardBuilder {
         boardPosition.setElement(new Element(DESERT));
         board.getPositions().add(boardPosition);
         createBoard(firstPiece);
-        populateElements(board);
     }
 
-    private void populateElements(Board board) {
-        List<Element> elements = populateElements();
+    private void populateElements() {
+        List<Element> elements = shuffleElements();
         for (Element element : elements) {
             for (BoardPosition position : board.getPositions()) {
                 if (position.getElement() == null) {
@@ -128,6 +125,8 @@ public class BoardBuilder {
             pieceInUse.connectFirstAndLastIntersectionPieces();
             nextPiece = pieceInUse.getNextPiece();
         }
+        populateElements();
+        distributingNumbers();
     }
 
     private boolean isTheLastPieceFromTheLoop(Piece pieceInUse, List<Edge> edges) {
@@ -212,7 +211,7 @@ public class BoardBuilder {
         }
     }
 
-    public List<Element> populateElements() {
+    public List<Element> shuffleElements() {
         List<Element> elementsList = new ArrayList<>();
         Map<Elements, Integer> elementsMap = new HashMap<>();
         elementsMap.put(WHEAT, 4);
@@ -228,14 +227,5 @@ public class BoardBuilder {
 
         Collections.shuffle(elementsList);
         return elementsList;
-    }
-    public List<String> getMapping(){
-        List<String> map = new ArrayList<>();
-        board.getPositions().forEach((position) -> {
-            position.getMapping().forEach((key, value) -> {
-                map.add(value);
-            });
-        });
-        return map;
     }
 }

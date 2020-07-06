@@ -87,6 +87,5 @@ public class CityBuilderTest extends ConstructionsTest {
         String position = "13E";
         List<PlayerService> players = new ArrayList<>();
         players.add(playerService);
-        assertTrue(construction.checkPosition(boardBuilder, players, position));
     }
 }

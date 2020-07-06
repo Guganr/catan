@@ -1,9 +1,6 @@
 package br.com.gustavonori.catan.model.board.positions;
 
 import br.com.gustavonori.catan.model.builders.BuildPoints;
-import br.com.gustavonori.catan.model.builders.CityBuilder;
-import br.com.gustavonori.catan.model.builders.Constructions;
-import br.com.gustavonori.catan.model.builders.VillageBuilder;
 
 public class Intersection {
     private int id;
@@ -24,5 +21,20 @@ public class Intersection {
         this.id = id;
     }
 
+    public BuildPoints getBuild() {
+        return build;
+    }
+
+    public void setBuild(BuildPoints build) {
+        this.build = build;
+    }
+
+    public boolean isAvailable() {
+        return !hasBuild();
+    }
+
+    public boolean hasBuild() {
+        return build != null;
+    }
 
 }

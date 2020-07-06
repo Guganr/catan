@@ -14,9 +14,8 @@ import static br.com.gustavonori.catan.model.models.elements.Elements.*;
 public class CityBuilder extends BuildPoints {
 
     private static final String NAME = "CITY";
-    private static final int POINTS = 1;
-    private Intersection intersection;
-    public static Map<Elements, Integer> elementsToBuild = (Map.of(
+    private static final int POINTS = 2;
+    public static final Map<Elements, Integer> elementsToBuild = (Map.of(
             WHEAT,2,
             ROCK,3
     ));
@@ -25,16 +24,13 @@ public class CityBuilder extends BuildPoints {
         super(NAME, POINTS, elementsToBuild);
     }
 
-
-    @Override
-    public boolean checkPosition(BoardBuilder board, List<PlayerService> playerServiceList, String position){
-//        AtomicBoolean check = new AtomicBoolean(false);
-//        playerServiceList.get(0).getPlayer().getConstructions().forEach(constructions -> {
-//            if (constructions instanceof VillageBuilder && constructions.getPosition().equals(position))
-//                check.set(true);
-//        });
-//        //ADDERRORMSG
-//        return check.get();
-        return true;
+    public void build(PlayerService playerService) {
+        Intersection intersection = getIntersection();
+        if (intersection.isAvailable()) {
+            addBuildIntoIntersection(intersection);
+            this.build(playerService);
+        } else {
+            //ADDERRORMSG
+        }
     }
 }

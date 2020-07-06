@@ -1,15 +1,14 @@
 package br.com.gustavonori.catan.model.models.player;
 
-import br.com.gustavonori.catan.model.board.BoardBuilder;
 import br.com.gustavonori.catan.model.board.positions.Edge;
 import br.com.gustavonori.catan.model.board.positions.Intersection;
+import br.com.gustavonori.catan.model.builders.Constructions;
 import br.com.gustavonori.catan.model.builders.RoadBuilder;
 import br.com.gustavonori.catan.model.builders.VillageBuilder;
 import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.services.PlayerService;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -79,43 +78,85 @@ public class PlayerServiceTest extends ElementsForCatanTest {
     }
 
     @Test
-    public void buildingRoad() {
+    public void isThereASequenceOfRoadsSuccess() {
+        Player otherPlayer = new Player(2, "Marjory");
+        PlayerService otherPlayerService = new PlayerService(otherPlayer);
+
+        Map<Elements, Integer> elementsAdd = new HashMap<>();
+        addElementsForSecondPlayer(otherPlayerService, elementsAdd);
+
+        Edge edge2 = board.getEdgeById(2);
+        Edge edge3 = board.getEdgeById(3);
+        Edge edge15 = board.getEdgeById(15);
+        Edge edge16 = board.getEdgeById(16);
+
+        playerService.buildingRoad(edge3);
+        playerService.buildingRoad(edge15);
+        playerService.buildingRoad(edge16);
+        otherPlayerService.buildingRoad(edge2);
+
+        Intersection intersection = board.getIntersectionById(3);
+        Assert.assertTrue(board.isThereASequenceOfRoads(intersection, playerService));
+        playerService.buildingVillage(intersection);
+        Assert.assertEquals(4, player.getConstructions().size());
+        VillageBuilder villageBuilder = (VillageBuilder) player.getConstructions().get(4);
+        Assert.assertEquals(4, player.getConstructions().size());
+    }
+
+    @Test
+    public void isThereASequenceOfRoadsFailed() {
+        Player otherPlayer = new Player(2, "Marjory");
+        PlayerService otherPlayerService = new PlayerService(otherPlayer);
+
+        Map<Elements, Integer> elementsAdd = new HashMap<>();
+        addElementsForSecondPlayer(otherPlayerService, elementsAdd);
+
+        Edge edge2 = board.getEdgeById(2);
+        Edge edge3 = board.getEdgeById(3);
+        Edge edge15 = board.getEdgeById(15);
+        Edge edge16 = board.getEdgeById(16);
+
+        playerService.buildingRoad(edge3);
+        playerService.buildingRoad(edge15);
+        otherPlayerService.buildingRoad(edge2);
+        otherPlayerService.buildingRoad(edge16);
+
+        Intersection intersection = board.getIntersectionById(3);
+        Assert.assertFalse(board.isThereASequenceOfRoads(intersection, playerService));
+        playerService.buildingVillage(intersection);
+    }
+
+    @Test
+    public void buildingVillageAnotherPlayerAreaFailed() {
         Map<Elements, Integer> elementsAdd = new HashMap<>();
         elementsAdd.put(BRICK, 3);
         elementsAdd.put(WOOD, 3);
         addElements(elementsAdd);
-        Edge edge3 = board.getEdgeById(3);
         Edge edge15 = board.getEdgeById(15);
         Edge edge16 = board.getEdgeById(16);
-        playerService.buildingRoad(edge3);
         playerService.buildingRoad(edge15);
         playerService.buildingRoad(edge16);
 
         Player otherPlayer = new Player(2, "Marjory");
         PlayerService otherPlayerService = new PlayerService(otherPlayer);
         Edge edge2 = board.getEdgeById(2);
+        Edge edge3 = board.getEdgeById(3);
+        elementsAdd.forEach(otherPlayerService::receivingElements);
         otherPlayerService.buildingRoad(edge2);
-
-        assertThat(player.getElements(), hasItems(
-                allOf(
-                        hasProperty("name", is(BRICK)),
-                        hasProperty("quantity", is(0))
-                ),
-                allOf(
-                        hasProperty("name", is(WOOD)),
-                        hasProperty("quantity", is(0))
-                )
-        ));
+        otherPlayerService.buildingRoad(edge3);
 
         Intersection intersection = board.getIntersectionById(3);
-        Assert.assertTrue(board.isThereASquenceOfRoads(intersection, playerService));
+        Assert.assertFalse(board.isThereASequenceOfRoads(intersection, playerService));
+        playerService.buildingVillage(intersection);
     }
 
     @Test
-    public void buildingRoadFailed2() {
+    public void buildingVillageWithoutSamePlayerRoadSequenceFailed() {
         Map<Elements, Integer> elementsAdd = new HashMap<>();
-        elementsAdd.put(BRICK, 2);
-        elementsAdd.put(WOOD, 2);
+        elementsAdd.put(BRICK, 3);
+        elementsAdd.put(WOOD, 3);
+        elementsAdd.put(WHEAT, 3);
+        elementsAdd.put(SHEEP, 3);
         addElements(elementsAdd);
         Edge edge3 = board.getEdgeById(3);
         Edge edge15 = board.getEdgeById(15);
@@ -126,15 +167,16 @@ public class PlayerServiceTest extends ElementsForCatanTest {
         PlayerService otherPlayerService = new PlayerService(otherPlayer);
         Edge edge2 = board.getEdgeById(2);
         Edge edge16 = board.getEdgeById(16);
+        elementsAdd.forEach(otherPlayerService::receivingElements);
         otherPlayerService.buildingRoad(edge2);
         otherPlayerService.buildingRoad(edge16);
 
         Intersection intersection = board.getIntersectionById(3);
-        Assert.assertFalse(board.isThereASquenceOfRoads(intersection, playerService));
+        Assert.assertFalse(board.isThereASequenceOfRoads(intersection, playerService));
     }
 
     @Test
-    public void buildingRoadFailed() {
+    public void buildingVillageWithoutRoadSequenceFailed2() {
         Map<Elements, Integer> elementsAdd = new HashMap<>();
         elementsAdd.put(BRICK, 2);
         elementsAdd.put(WOOD, 2);
@@ -145,10 +187,11 @@ public class PlayerServiceTest extends ElementsForCatanTest {
         Player otherPlayer = new Player(2, "Marjory");
         PlayerService otherPlayerService = new PlayerService(otherPlayer);
         Edge edge2 = board.getEdgeById(2);
+        elementsAdd.forEach(otherPlayerService::receivingElements);
         otherPlayerService.buildingRoad(edge2);
 
         Intersection intersection = board.getIntersectionById(3);
-        Assert.assertFalse(board.isThereASquenceOfRoads(intersection, playerService));
+        Assert.assertFalse(board.isThereASequenceOfRoads(intersection, playerService));
     }
 
     @Test
@@ -180,10 +223,10 @@ public class PlayerServiceTest extends ElementsForCatanTest {
     @Test
     public void buildVillage() {
         Map<Elements, Integer> elements = new HashMap<>();
-        elements.put(BRICK, 2);
-        elements.put(WHEAT, 2);
-        elements.put(SHEEP, 2);
-        elements.put(WOOD, 1);
+        elements.put(BRICK, 3);
+        elements.put(WHEAT, 3);
+        elements.put(SHEEP, 3);
+        elements.put(WOOD, 2);
         addElements(elements);
         playerService.buildingConstructions(new VillageBuilder());
         assertThat(player.getElements(), hasItems(
@@ -254,5 +297,21 @@ public class PlayerServiceTest extends ElementsForCatanTest {
         elements.forEach((name, quantity) -> {
             playerService.receivingElements(name, quantity);
         });
+    }
+
+
+    private void addElementsForSecondPlayer(PlayerService otherPlayerService, Map<Elements, Integer> elementsAdd) {
+        fillElementsMap(elementsAdd);
+        addElements(elementsAdd);
+        elementsAdd.clear();
+        fillElementsMap(elementsAdd);
+        elementsAdd.forEach(otherPlayerService::receivingElements);
+    }
+
+    private void fillElementsMap(Map<Elements, Integer> elementsAdd) {
+        elementsAdd.put(BRICK, 4);
+        elementsAdd.put(WOOD, 4);
+        elementsAdd.put(WHEAT, 4);
+        elementsAdd.put(SHEEP, 4);
     }
 }

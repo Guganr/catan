@@ -19,6 +19,7 @@ public class Constructions implements ConstructionsBuilder {
     private String name;
     private int points;
     private Map<Elements, Integer> elementsToBuild;
+    private Edge edge;
 
     public Constructions(String name, int points, Map<Elements, Integer> elementsToBuild) {
         this.name = name;
@@ -38,6 +39,14 @@ public class Constructions implements ConstructionsBuilder {
     }
 
 
+    public Edge getEdge() {
+        return edge;
+    }
+
+    public void setEdge(Edge edge) {
+        this.edge = edge;
+    }
+
     public boolean checkElements(List<Element> elements) {
         AtomicBoolean check = new AtomicBoolean(true);
         for (Element element : elements) {
@@ -51,25 +60,6 @@ public class Constructions implements ConstructionsBuilder {
             });
         }
         return check.get();
-    }
-
-    @Override
-    public boolean checkPosition(BoardBuilder board, List<PlayerService> playerServiceList, String position){
-//        AtomicBoolean check = new AtomicBoolean(true);
-//        if (board.getMapping().contains(position)) {
-//            playerServiceList.forEach(playerService -> {
-//                playerService.getPlayer().getConstructions().forEach((constructions) -> {
-//                    if (constructions.getPosition().equals(position))
-//                        check.set(false);
-//                        //ADDERRORMSG
-//                });
-//            });
-//        } else {
-//            //ADDERRORMSG
-//            return false;
-//        }
-//        return check.get();
-        return true;
     }
 
     @Override

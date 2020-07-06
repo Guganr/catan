@@ -1,15 +1,21 @@
 package br.com.gustavonori.catan.model.services;
 
 import br.com.gustavonori.catan.model.board.BoardBuilder;
+import br.com.gustavonori.catan.model.board.BoardService;
 import br.com.gustavonori.catan.model.board.positions.Edge;
+import br.com.gustavonori.catan.model.board.positions.Intersection;
+import br.com.gustavonori.catan.model.builders.CityBuilder;
 import br.com.gustavonori.catan.model.builders.Constructions;
 import br.com.gustavonori.catan.model.builders.RoadBuilder;
+import br.com.gustavonori.catan.model.builders.VillageBuilder;
 import br.com.gustavonori.catan.model.models.elements.Element;
 import br.com.gustavonori.catan.model.models.player.RemovingElementException;
 import br.com.gustavonori.catan.model.models.elements.Elements;
 import br.com.gustavonori.catan.model.models.player.Player;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -80,6 +86,21 @@ public class PlayerService {
         }
     }
 
+    public void buildingVillage(Intersection intersection){
+        VillageBuilder village = new VillageBuilder();
+        if (village.checkElements(player.getElements())) {
+                village.build(intersection, this);
+        }
+    }
+
+    public void buildingCity(VillageBuilder village){
+        CityBuilder city = village.createCity();
+        if (city.checkElements(player.getElements())) {
+            city.build(this);
+        }
+
+    }
+
     private int rollTheDice() {
         Random r = new Random();
         return r.nextInt((12 - 1) + 1) + 1;
@@ -87,5 +108,15 @@ public class PlayerService {
 
     public boolean isAPlayerRoad(Edge edge) {
         return edge.hasRoad() && player.getConstructions().contains(edge.getRoad());
+    }
+
+    public List<Edge> getPlayerEdges() {
+        List<Edge> playerEdges = new ArrayList<>();
+        player.getConstructions().forEach(construction -> {
+            if (construction.getEdge().hasRoad()) {
+                playerEdges.add(construction.getEdge());
+            }
+        });
+        return playerEdges;
     }
 }

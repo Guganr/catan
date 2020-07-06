@@ -13,6 +13,4 @@ public interface ConstructionsBuilder {
 
     void specificAction(PlayerService playerService);
 
-    boolean checkPosition(BoardBuilder board, List<PlayerService> playerServiceList, String position);
-
 }

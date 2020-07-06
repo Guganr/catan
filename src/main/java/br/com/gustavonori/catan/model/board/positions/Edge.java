@@ -48,18 +48,9 @@ public class Edge {
     }
 
     public boolean isAvailable() {
-        return true;
+        return !hasRoad();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("E" + id + " - ");
-        intersections.forEach(intersection -> {
-            sb.append("I" + intersection.getId() + " ");
-        });
-        return sb.toString();
-    }
 
     public Intersection getLastIntersection() {
         return intersections.get(intersections.size() - 1);
@@ -83,5 +74,15 @@ public class Edge {
 
     public boolean hasRoad() {
         return road != null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("E" + id + " - ");
+        intersections.forEach(intersection -> {
+            sb.append("I" + intersection.getId() + " ");
+        });
+        return sb.toString();
     }
 }

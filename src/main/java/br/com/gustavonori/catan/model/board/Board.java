@@ -103,7 +103,7 @@ public class Board {
         }
         return Collections.emptyList();
     }
-    public boolean isThereASquenceOfRoads(Intersection intersection, PlayerService playerService) {
+    public boolean isThereASequenceOfRoads(Intersection intersection, PlayerService playerService) {
         List<Piece> pieces = getPiecesByIntersection(intersection);
         List<Edge> commonEdges = getCommonEdges(pieces, intersection, playerService);
         return getNextEdges(commonEdges, intersection, playerService);
@@ -128,12 +128,36 @@ public class Board {
                 }
             }
         }
-        return !edgesByIntersection.isEmpty();
+        if (edgesByIntersection.isEmpty()) {
+            return false;
+        }
+        List<Edge> playerEdges = playerService.getPlayerEdges();
+        return checkIfIsAnotherPlayerArea(intersection, playerEdges, playerService);
+    }
+
+    private boolean checkIfIsAnotherPlayerArea(Intersection intersection, List<Edge> playerEdges, PlayerService playerService) {
+        List<Edge> edges = getEdgesByIntersection(intersection);
+        edges.removeAll(playerEdges);
+        if (edges.size() < 2)
+            return true;
+        for (Edge edge : edges) {
+            if (edge.hasRoad()) {
+                if (playerService.isAPlayerRoad(edge))
+                    return true;
+            } else
+                return true;
+        }
+        return false;
     }
 
     private List<Edge> getEdgesByIntersection(Intersection commonIntersection, PlayerService playerService) {
         List<Piece> pieces = getPiecesByIntersection(commonIntersection);
         return getCommonEdges(pieces, commonIntersection, playerService);
+    }
+
+    private List<Edge> getEdgesByIntersection(Intersection commonIntersection) {
+        List<Piece> pieces = getPiecesByIntersection(commonIntersection);
+        return getCommonEdges(pieces, commonIntersection);
     }
 
     private List<Edge> getCommonEdges(List<Piece> pieces, Intersection intersection, PlayerService playerService) {
